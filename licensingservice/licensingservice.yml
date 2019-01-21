@@ -1,14 +1,70 @@
-example.property: "I AM IN THE DEFAULT"
-spring.jpa.database: "POSTGRESQL"
-spring.datasource.platform:  "postgres"
-spring.jpa.show-sql: "true"
-spring.database.driverClassName: "org.postgresql.Driver"
-spring.datasource.url: "jdbc:postgresql://localhost:5432/eagle_eye_local"
-spring.datasource.username: "postgres"
-spring.datasource.password: "{cipher}0c10539b95d095a83f7e42f70e5de6784f5369c93d23acbe435b11eb279877ee"
-spring.datasource.testWhileIdle: "true"
-spring.datasource.validationQuery: "SELECT 1"
-spring.jpa.properties.hibernate.dialect: "org.hibernate.dialect.PostgreSQLDialect"
-redis.server: "redis"
-redis.port: "6379"
-signing.key: "345345fsdfsf5345"
+
+redis:
+  server: "redis"
+  port: "6379"
+
+signing:
+  key: "345345fsdfsf5345"
+
+spring:
+    jpa:
+      show-sql: "true"
+      database: "POSTGRESQL"
+      properties:
+        hibernate:
+          dialect: "org.hibernate.dialect.PostgreSQLDialect"
+    datasource:
+      platform: "postgres"
+      schema: classpath*:db/mysql/schema.sql
+      data: classpath*:db/mysql/data.sql
+      url: "jdbc:postgresql://localhost:5432/eagle_eye_local"
+      driverClassName: "org.postgresql.Driver"
+      username: postgres
+      password: "{cipher}0c10539b95d095a83f7e42f70e5de6784f5369c93d23acbe435b11eb279877ee"
+      initialization-mode: ALWAYS
+      testWhileIdle: "true"
+      valdationQuey: "SELECT 1"
+
+eureka:
+    instance:
+        # enable to register multiple app instances with a random server port
+        instance-id: ${spring.application.name}:${random.uuid}
+
+
+---
+
+spring:
+    profiles: mysql
+    jpa:
+      show-sql: "true"
+      database: "POSTGRESQL"
+      properties:
+        hibernate:
+          dialect: "org.hibernate.dialect.PostgreSQLDialect"
+    datasource:
+      platform: "postgres"
+      schema: classpath*:db/mysql/schema.sql
+      data: classpath*:db/mysql/data.sql
+      url: "jdbc:postgresql://192.168.72.121:5432/eagle_eye_local"
+      driverClassName: "org.postgresql.Driver"
+      username: postgres
+      password: "{cipher}0c10539b95d095a83f7e42f70e5de6784f5369c93d23acbe435b11eb279877ee"
+      initialization-mode: ALWAYS
+      testWhileIdle: "true"
+      valdationQuey: "SELECT 1"
+
+---
+
+spring:
+    profiles: docker
+
+#  zipkin:
+#    baseUrl: http://tracing-server:9411
+
+eureka:
+    client:
+        serviceUrl:
+            defaultZone: http://eurekaserver:8761/eureka/
+
+
+
