@@ -1,16 +1,93 @@
-zuul.ignored-services: "*"
-zuul.prefix:  /api
-zuul.routes.organizationservice: /organization/**
-zuul.routes.licensingservice: /licensing/**
-zuul.routes.authenticationservice: /auth/**
+zuul:
+  ignored-services: "*"
+  prefix:  /api
+  routes:
+    organizationservice: /organization/**
+    licensingservice: /licensing/**
+    authenticationservice: /auth/**
+  sensitiveHeaders: Cookie,Set-Cookie
+  debug:
+    request: true
+
 #zuul.routes.licensestatic.path: /licensestatic/**
 #zuul.routes.licensestatic.url:  http://licenseservice-static:8081
 #zuul.routes.licensestatic.serviceId: licensestatic
 #zuul.routes.licensestatic.ribbon.listOfServers: http://licenseservice-static1:8081, http://licenseservice-static2:8082
 #ribbon.eureka.enabled: false
-zuul.sensitiveHeaders: Cookie,Set-Cookie
-zuul.debug.request: true
-hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 2500
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 2500
+
 #hystrix.command.licensingservice.execution.isolation.thread.timeoutInMilliseconds: 2
 #licensingservice.ribbon.ReadTimeout: 2
-signing.key: "345345fsdfsf5345"
+
+signing:
+  key: "345345fsdfsf5345"
+
+spring:
+    jpa:
+      show-sql: "true"
+      database: "POSTGRESQL"
+      properties:
+        hibernate:
+          dialect: "org.hibernate.dialect.PostgreSQLDialect"
+    datasource:
+      platform: "postgres"
+      schema: classpath*:db/mysql/schema.sql
+      data: classpath*:db/mysql/data.sql
+      url: "jdbc:postgresql://localhost:5432/eagle_eye_local"
+      driverClassName: "org.postgresql.Driver"
+      username: postgres
+      password: "{cipher}0c10539b95d095a83f7e42f70e5de6784f5369c93d23acbe435b11eb279877ee"
+      initialization-mode: ALWAYS
+      testWhileIdle: "true"
+      valdationQuey: "SELECT 1"
+
+eureka:
+    instance:
+        # enable to register multiple app instances with a random server port
+        instance-id: ${spring.application.name}:${random.uuid}
+
+
+---
+
+spring:
+    profiles: mysql
+    jpa:
+      show-sql: "true"
+      database: "POSTGRESQL"
+      properties:
+        hibernate:
+          dialect: "org.hibernate.dialect.PostgreSQLDialect"
+    datasource:
+      platform: "postgres"
+      schema: classpath*:db/mysql/schema.sql
+      data: classpath*:db/mysql/data.sql
+      url: "jdbc:postgresql://192.168.72.121:5432/eagle_eye_local"
+      driverClassName: "org.postgresql.Driver"
+      username: postgres
+      password: "{cipher}0c10539b95d095a83f7e42f70e5de6784f5369c93d23acbe435b11eb279877ee"
+      initialization-mode: ALWAYS
+      testWhileIdle: "true"
+      valdationQuey: "SELECT 1"
+
+---
+
+spring:
+    profiles: docker
+
+#  zipkin:
+#    baseUrl: http://tracing-server:9411
+
+eureka:
+    client:
+        serviceUrl:
+            defaultZone: http://eurekaserver:8761/eureka/
+
+
+
